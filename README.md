@@ -10,4 +10,5 @@ Since it's difficult to unambiguously interpret the observed AIC differences, we
 
 _Citation:_
 Wagenmakers EJ, Farrell S 2004. AIC model selection using Akaike weights. Psychonomic Bulletin & Review 11: 192–196.
+
 Rabosky DL, Lovette IJ. 2008. Explosive evolutionary radiations: decreasing speciation or increasing extinction through time? Evolution 62: 1866–1875.
