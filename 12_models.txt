@@ -1,0 +1,87 @@
+# 1) B constant
+f.lamb <-function(t,y){y[1]}
+f.mu<-function(t,y){0}
+lamb_par <- c(0.09)
+mu_par <- c()
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477, cst.lamb=TRUE,fix.mu=TRUE, cond="crown", dt=1e-3)
+
+# 2) BD constant
+f.lamb <-function(t,y){y[1]}
+f.mu<-function(t,y){y[1]}
+lamb_par <- c(0.09)
+mu_par <- c(0.3)
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477,cst.lamb=TRUE,cst.mu=TRUE, cond="crown", dt=1e-3)
+
+# 3) B variable E ("B exponential")
+f.lamb <-function(t,y){y[1] * exp(y[2] * t)}
+f.mu<-function(t,y){0}
+lamb_par<-c(0.05, 0.01)
+mu_par<-c()
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477, expo.lamb=TRUE, fix.mu=TRUE, cond="crown", dt=1e-3)
+
+# 4) B variable L ("B linear")
+f.lamb <-function(t,y){y[1] + y[2] * t}
+f.mu<-function(t,y){0}
+lamb_par<-c(0.05, 0.01)
+mu_par<-c()
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477, fix.mu=TRUE, cond="crown", dt=1e-3)
+
+# 5) B variable E, D constant ("B exponential, D constant")
+f.lamb <-function(t,y){y[1] * exp(y[2] * t)}
+mu_par <- c(0.5)
+f.mu<-function(t,y){y[1]}
+lamb_par<-c(0.05, 0.01)
+mu_par<-c(0.1)
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477, expo.lamb=TRUE, cst.mu=TRUE, cond="crown", dt=1e-3)
+
+# 6) B variable L, D constant ("B linear, D constant")
+f.lamb <-function(t,y){y[1] + y[2] * t}
+f.mu<-function(t,y){y[1]}
+lamb_par<-c(0.05, 0.01)
+mu_par <- c(0.5)
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477, cst.mu= TRUE, cond="crown", dt=1e-3)
+
+# 7) B constant, D variable E ("B constant, D exponential")
+f.lamb<-function(t,y){y[1]}
+f.mu <-function(t,y){y[1] * exp(y[2] * t)}
+lamb_par <- c(0.05)
+mu_par <-c(0.005, 0.01)
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477, cst.lamb=TRUE, expo.mu=TRUE, cond="crown", dt=1e-3)
+
+# 8) B constant, D variable L ("B constant, D linear")
+f.lamb<-function(t,y){y[1]}
+f.mu <-function(t,y){y[1] + y[2] * t}
+lamb_par <- c(0.05)
+mu_par <-c(0.005, 0.001)
+res <- fit_bd(tree,tot_time,f.lamb,f.mu,lamb_par,mu_par,f=8855/114477, cst.lamb=TRUE, cond="crown", dt=1e-3)
+
+# 9) B variable, D variable
+  bvar.dvar <- fit_bd(tree, tot_time, f.lamb=lambda.var, f.mu=mu.var, lamb_par=par[[9]][c(1,2)],mu_par=par[[9]][c(3,4)], expo.lamb=TRUE, expo.mu=TRUE,cond="crown", f=fraction, dt=1e-3)
+  
+###########################################################################
+#######fit_env: Maximum likelihood fit of the environmental birth-death model #########
+data(InfTemp)
+dof<-smooth.spline(InfTemp[,1], InfTemp[,2])$df
+
+# 10) # Fits a model with lambda varying as an exponential function of temperature
+# and mu fixed to 0 (no extinction).  Here t stands for time and x for temperature.
+context("B exponential, function of temperature")
+f.lamb <-function(t,x,y){y[1] * exp(y[2] * x)}
+f.mu<-function(t,x,y){0}
+lamb_par<-c(0.10, 0.01)
+mu_par<-c()
+res <- fit_env(tree,InfTemp,tot_time,f.lamb,f.mu,lamb_par,mu_par, f=8855/114477, fix.mu=TRUE, df=dof, cond="crown", dt=1e-3)
+
+# 11) "B exponential, function of temperature & time"
+f.lamb <-function(t,x,y){y[1] * exp(y[2] * t + y[3] * x)}
+f.mu<-function(t,x,y){0}
+lamb_par<-c(0.10, -0.01, 0.03)
+mu_par<-c()
+res <- fit_env(tree,InfTemp,tot_time,f.lamb,f.mu,lamb_par,mu_par, f=8855/114477, fix.mu=TRUE, df=dof, cond="crown", dt=1e-3)
+
+# 12) "B exponential, function of time - no temperature dependency"
+f.lamb <-function(t,x,y){y[1] * exp(y[2] * t)}
+f.mu<-function(t,x,y){0}
+lamb_par<-c(0.05, 0.01)
+mu_par<-c()
+res <- fit_env(tree,InfTemp,tot_time,f.lamb,f.mu, lamb_par,mu_par, f=8855/114477, fix.mu=TRUE, df=dof, dt=1e-3)
